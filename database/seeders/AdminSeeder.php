@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use DB;
 use Hash;
-
+  
 class AdminSeeder extends Seeder
 {
-    /**
+    /** 
      * Run the database seeds.
      *
      * @return void
