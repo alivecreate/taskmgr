@@ -1,0 +1,121 @@
+/* ----------------------------------------------------------------
+	Custom CSS
+
+	Add all your Custom Styled CSS here for New Styles or
+	Overwriting Default Theme Styles for Better Handling Updates
+-----------------------------------------------------------------*/
+
+.slider-caption h2{
+    background: #ffffff7a;
+}
+.slider-caption p {
+    font-weight: 600;
+}
+.swiper-slide.swiper-slide-active {
+    background: #f7f7f700;
+}
+p.d-none.d-sm-block.fadeInUp.animated {
+    background: #ffffff30;
+}
+
+.box-shadow1 a img {
+    -webkit-transition: transform .7s ease-in-out;
+    transition: transform .7s ease-in-out;
+  }
+.box-shadow1 a img:hover{
+	-webkit-transform: rotate(0) scale(1);
+	transform: rotate(0) scale(1);
+}
+.heading-block::after {
+    content: '';
+    display: none;
+    margin-top: 0px;
+    width: 0px;
+    border-top: 0px;
+}
+.seprator1 {
+    margin-top: 26px;
+    margin-bottom: 26px;
+    width: 192px;
+    color: orange;
+ }
+
+
+.block-style-1{
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-top: 1rem; 
+    padding-top: 1rem; 
+}
+
+.box-shadow1:hover{
+    background: #ffffff8c;
+    border-bottom: 12px solid #ffffff8c;
+}
+
+.box-shadow1 {
+    border: 12px solid #ffffff6e;
+    background: #f7f3f3e3;
+}
+
+.box-shadow1.active{
+    border: 2px solid white;
+    border-radius: 9px;
+    box-shadow: 0pt 1pt 3pt 1pt white;
+    background: #af7724;
+}
+
+.box-text-light{
+    color:white !important;
+}
+.box-text-dark{
+    color: black !important;
+}
+
+.image-style1 {
+    border: 1px solid #929292;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+p.text-big {
+    font-size: 17px;
+    color: #2f2f2f;
+}
+.text-strong {
+    font-weight: bold;
+}
+
+
+
+
+
+/* Rotate */
+.hover06 figure img {
+	-webkit-transform: rotate(15deg) scale(1.4);
+	transform: rotate(15deg) scale(1.4);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+.hover06 figure:hover img {
+	-webkit-transform: rotate(0) scale(1);
+	transform: rotate(0) scale(1);
+}
+
+/* BreadCrumb */
+.breadcrumb-item.active {
+    color: #d2d8de;
+}
+#page-title.page-title-mini h1 {
+    color: white;
+}
+#page-title span {
+    color: #f5db24;
+}
+.breadcrumb a{
+    color:#c5ae08;
+}
+#page-title span strong{ 
+    border-top: 2px solid silver;
+}
+

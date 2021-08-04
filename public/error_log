@@ -1,0 +1,18 @@
+[26-Jul-2021 18:43:01 UTC] PHP Fatal error:  Uncaught Error: Class 'DB' not found in /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php:7
+Stack trace:
+#0 /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php(30): getTaskComments()
+#1 /home2/aliverkb/demo2.alivecreate.com/vendor/composer/autoload_real.php(71): require('/home2/aliverkb...')
+#2 /home2/aliverkb/demo2.alivecreate.com/vendor/composer/autoload_real.php(61): composerRequire1f150ca8ca4247a5d0cb2076590b3e47('b267ab2f5753774...', '/home2/aliverkb...')
+#3 /home2/aliverkb/demo2.alivecreate.com/vendor/autoload.php(7): ComposerAutoloaderInit1f150ca8ca4247a5d0cb2076590b3e47::getLoader()
+#4 /home2/aliverkb/demo2.alivecreate.com/public/index.php(34): require('/home2/aliverkb...')
+#5 {main}
+  thrown in /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php on line 7
+[26-Jul-2021 18:43:05 UTC] PHP Fatal error:  Uncaught Error: Class 'DB' not found in /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php:7
+Stack trace:
+#0 /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php(30): getTaskComments()
+#1 /home2/aliverkb/demo2.alivecreate.com/vendor/composer/autoload_real.php(71): require('/home2/aliverkb...')
+#2 /home2/aliverkb/demo2.alivecreate.com/vendor/composer/autoload_real.php(61): composerRequire1f150ca8ca4247a5d0cb2076590b3e47('b267ab2f5753774...', '/home2/aliverkb...')
+#3 /home2/aliverkb/demo2.alivecreate.com/vendor/autoload.php(7): ComposerAutoloaderInit1f150ca8ca4247a5d0cb2076590b3e47::getLoader()
+#4 /home2/aliverkb/demo2.alivecreate.com/public/index.php(34): require('/home2/aliverkb...')
+#5 {main}
+  thrown in /home2/aliverkb/demo2.alivecreate.com/app/Helpers/myDataHelper.php on line 7

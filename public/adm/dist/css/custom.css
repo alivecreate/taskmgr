@@ -1,0 +1,106 @@
+.table-border-none tr td{
+    border:none;
+}
+
+.table-border-none tr td:hover, .table-border-none tr:hover{
+color: #212529;
+background-color: transparent !important;
+}
+.object-fit{
+    object-fit: cover;
+}
+
+.object-fit-sm{
+    object-fit: cover;
+    width: 70px;
+    height: 70px;
+}
+aside.main-sidebar {
+    background: #2183D8;
+}
+.card-header:first-child {
+    background: #cccccc;
+}
+
+.comment-right .direct-chat-text {
+    background: whitesmoke;
+}
+
+.no-before:before{
+    
+    border-radius: .0px;
+    background-color: transparent;
+}
+.timeline-right-block{
+
+    background: #eaeaea;
+    padding-top: 6px;
+    border: 1px solid #b1b0b0;
+}
+.label-style1{
+    padding-right: 20px !important;
+    border-top-right-radius: 20px;
+    border-left: 3px solid #343a40;
+}
+
+.nav-treeview .nav-item a {
+    background: #ffff87;
+    border: 0.5px solid silver;
+    color: #4a4949 !important;
+    font-weight: bold;
+}
+.info a {
+    font-weight: bold;
+}
+a.brand-link span {
+    font-weight: bold !important;
+    color: #2a2c2d;
+    background: #ffffff;
+    padding: 8px 19px;
+    word-spacing: 3px;
+}
+.navbar-light .navbar-nav .nav-link {
+    color: white;
+    
+    font-weight: bold;
+}
+nav.main-header.navbar.navbar-expand.navbar-white.navbar-light {
+    background: #2183d8;
+}
+
+a.brand-link {
+    text-align: center;
+    font-weight: 600;
+}
+[class*=sidebar-dark] .user-panel, [class*=sidebar-dark] .brand-link {
+    border-bottom: 2px dashed #dedfe0;
+}
+
+[class*=sidebar-dark-] {
+    background-color: #228192;
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link:focus, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link:hover {
+    background-color: #ffca7b;
+    color: #343a40 !important;
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link, [class*=sidebar-dark-] .sidebar a {
+    color: #ffffff;
+}
+
+.active-menu {
+    background: #ffca7b!important;
+}
+
+.user-panel .image img {
+    background: white;
+}
+li ul.nav > .nav-item > .nav.nav-treeview {
+    padding-left: 19px;
+}
+li ul.nav > .nav-item > .nav.nav-treeview a {
+    background: #ffca7b !important;
+    border-left: 3px solid;
+    padding: 5px;
+}
