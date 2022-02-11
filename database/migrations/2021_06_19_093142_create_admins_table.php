@@ -21,7 +21,7 @@ class CreateAdminsTable extends Migration
             $table->text('image')->nullable();
             $table->text('phone')->nullable();
             $table->text('address')->nullable();
-            $table->text('education')->nullable();
+            $table->text('code')->nullable();
             $table->text('post')->nullable();
             $table->text('docs')->nullable();
             $table->integer('status')->default(1);

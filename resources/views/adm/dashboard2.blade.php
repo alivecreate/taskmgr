@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-dashboard2')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 @section('content')
 
 <div class="content-wrapper">

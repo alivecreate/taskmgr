@@ -9,4 +9,11 @@ class TaskStatus extends Model
 {
     protected $table = 'task_status';
     use HasFactory;
+
+
+    function taskAssign($id){
+        
+       
+    }
+
 }

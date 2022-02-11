@@ -9,6 +9,7 @@ use App\Models\admin\Client;
 use Illuminate\Support\Facades\Hash;
 use File;
 use Image;
+use DB;
 
 class ClientController extends Controller
 {
@@ -150,13 +151,23 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
-        
-        $delete = $client->delete();
-        if($delete){
-            return back()->with('success', 'Client Deleted...');
-        }else{
-            return back()->with('fail', 'Something went wrong, try again later...');
+        $client_id = $client->id;
+
+        $getTasks = DB::table('tasks')->where('client_id', $client_id)->get();
+
+        foreach($getTasks as $getTask){
+            $getTasksAssigns = DB::table('task_assign')->where('task_id', $getTask->id)->delete();
+            $getTasks = DB::table('tasks')->where('client_id', $client_id)->delete();
+            $getAdmin = DB::table('clients')->where('id', $client_id)->delete();
+
+            if($getAdmin){
+                return back()->with('success', 'Client Deleted...');
+            }else{
+                return back()->with('fail', 'Something went wrong, try again later...');
+            }
         }
+
+
 
     }
 }

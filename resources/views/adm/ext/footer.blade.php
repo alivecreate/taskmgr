@@ -1,8 +1,8 @@
 <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2021 <a class="text-danger" href="https://task.mailvadodara.com/">MailVadodara</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.1.0
+      <b>Design & Developed By <a class="text-danger" href="https://alivecreate.com">Alivecreate Web Solutions</a></b> 
     </div>
   </footer>
 

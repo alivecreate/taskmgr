@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 @section('content')
 
 {{$LoggedUserInfo['name']}}

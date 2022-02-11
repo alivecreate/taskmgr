@@ -28,6 +28,7 @@ class CreateTaskAssignTable extends Migration
             $table->unsignedBigInteger('task_id')->nullable();
 
             $table->unsignedBigInteger('admin_id')->nullable();
+            $table->text('admin_group')->nullable();
             
             $table->softDeletes();
             $table->timestamps();

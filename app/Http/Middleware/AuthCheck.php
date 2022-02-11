@@ -17,7 +17,6 @@ class AuthCheck
     public function handle(Request $request, Closure $next)
     {
 
-
         if(!session()->has('LoggedUser') && ($request->path() != 'admin/login' && $request->path() != 'auth/register' )){
             return redirect('admin/login')->with('fail', 'You must be logged in');
         }

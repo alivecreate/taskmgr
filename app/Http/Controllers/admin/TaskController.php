@@ -27,7 +27,8 @@ class TaskController extends Controller
         $this->tasks = Task::orderBy('id', 'DESC')->get();
         $this->categories = Category::orderBy('id', 'DESC')->get();
         $this->employees = Admin::get();
-        $this->parent_categories = category::where(['parent_id'=>0])->orderBy('id','DESC')->get();
+
+        $this->parent_categories = category::where(['parent_id'=>0])->whereNotIn('id', [0])->orderBy('id','DESC')->get();
     }
     
 
@@ -123,6 +124,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request->input());
         
         $request->validate([
             'name' => 'required|max:255',

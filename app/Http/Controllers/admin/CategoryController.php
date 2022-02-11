@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\admin\Category;
+use DB;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,7 @@ class CategoryController extends Controller
      */
 
     public function __construct(){
-        $this->parent_categories = category::where(['parent_id'=>0])->orderBy('id','DESC')->get();
+        $this->parent_categories = category::where(['parent_id'=>0])->whereNotIn('id', [0])->orderBy('id','DESC')->get();
     }
     
 
@@ -25,6 +26,14 @@ class CategoryController extends Controller
         
         $data = ['parent_categories' =>  $this->parent_categories];
         return view('adm.pages.category.index', $data);
+        
+    }
+
+    public function viewAll()
+    {
+        
+        $data = ['parent_categories' =>  $this->parent_categories, 'treeCategories' => getCategoryTree()];
+        return view('adm.pages.category.index-old', $data);
         
     }
 
@@ -47,17 +56,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-
+        // dd($request->input());
         $request->validate([
-            'kacheri_name' => 'required|max:255',
-            'kacheri_description' => 'required|max:255',
+            'name' => 'required',
         ]);
 
+        
         $category = new Category;
-        $category->name = $request->kacheri_name;
-        $category->description  = $request->kacheri_description ;
-        $category->address  = $request->kacheri_address ;
-        $category->parent_id  = 0;
+        $category->name = $request->name;
+        $category->address  = $request->address ;
+        $category->parent_id  = $request->parent_id ;
+        
         $save = $category->save();
 
         if($save){
@@ -79,7 +88,7 @@ class CategoryController extends Controller
 
         $category = new Category;
         $category->name = $request->petaKacheri_name;
-        $category->description  = $request->petaKacheri_description ;
+        $category->address  = $request->petaKacheri_description ;
         $category->address  = $request->petaKacheri_address ;
         $category->parent_id  = $request->kacheri_parent_id1;
         $save = $category->save();
@@ -105,7 +114,7 @@ class CategoryController extends Controller
 
         $category = new Category;
         $category->name = $request->department_name;
-        $category->description  = $request->department_description ;
+        $category->address  = $request->department_description ;
         $category->address  = $request->department_address ;
         $category->parent_id  = $request->petaKacheri_parent_id;
         $save = $category->save();
@@ -138,8 +147,16 @@ class CategoryController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $data = ['type'=> $request->type, 'parent_categories' =>  $this->parent_categories,
-                 'data'=> Category::where('id', $id)->first()];
+        
+
+        $category = Category::where('id', $id)->first();
+        
+        $data = ['type'=> $request->type, 
+                'categories' =>  category::where(['parent_id'=>0])->whereNotIn('id',[$id])
+                                ->orderBy('id','DESC')->get(),
+                
+                 'data'=> $category ];
+
 
         // dd(Category::where('id', $id)->first());
         return view('adm.pages.category.edit',$data);
@@ -154,74 +171,22 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
         // dd($request->input());
 
-        if($request->type == 'kacheri'){
-            $request->validate([
-                'kacheri_name' => 'required|max:255',
-                'kacheri_description' => 'required|max:255',
-            ]);
-            $category = Category::find($id);
-            $category->name = $request->kacheri_name;
-            $category->description  = $request->kacheri_description ;
-            $category->address  = $request->kacheri_address ;
-            $category->parent_id  = 0;
-            $save = $category->save();
+        $category = Category::find($id);
+        $category->name = $request->name;
+        $category->address = $request->address;
 
-            if($save){
-                return back()->with('success', 'Kacheri Updated...');
-            }else{
-                return back()->with('fail', 'Something went wrong, try again later...');
-            }
+        $category->parent_id  = $request->parent_id;
+        $save = $category->save();
+
+        if($save){
+            return back()->with('success', 'Data Updated...');
+        }else{
+            return back()->with('fail', 'Something went wrong, try again later...');
         }
-
-        if($request->type == 'peta_kacheri'){
-            $request->validate([
-                'petaKacheri_name' => 'required|max:255',
-                'petaKacheri_description' => 'required|max:255',
-                'kacheri_parent_id1' => 'required',
-                
-            ]);
-
-            $category = Category::find($id);
-            $category->name = $request->petaKacheri_name;
-            $category->description  = $request->petaKacheri_description ;
-            $category->address  = $request->petaKacheri_address ;
-            $category->parent_id  = $request->kacheri_parent_id1;
-            $save = $category->save();
-
-            if($save){
-                return back()->with('success', 'New Peta Kacheri Added...');
-            }else{
-                return back()->with('fail', 'Something went wrong, try again later...');
-            }
-        }
-
-
-        if($request->type == 'department'){
-
-            $request->validate([
-                'department_name' => 'required|max:255',
-                'department_description' => 'required|max:255',
-                'kacheri_parent_id' => 'required',
-                'petaKacheri_parent_id' => 'required',
-                
-            ]);
-
-            $category = Category::find($id);
-            $category->name = $request->department_name;
-            $category->description  = $request->department_description ;
-            $category->address  = $request->department_address ;
-            $category->parent_id  = $request->petaKacheri_parent_id;
-            $save = $category->save();
-
-            if($save){
-                return back()->with('success', 'New Department Added...');
-            }else{
-                return back()->with('fail', 'Something went wrong, try again later...');
-            }
-        }
+        
 
     }
 
@@ -231,8 +196,44 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
+        dd($request->input());
         $category->delete();
     }
+    public function deleteCategory($id)
+    {
+        // dd('testing del');
+        // dd(getParents($id));
+
+        // dd($id);
+        // $category->delete();
+        
+        $checkCurrent = DB::table('categories')->where('id', $id)->first();
+        // dd($checkCurrent);
+        checkProductIsEXist($checkCurrent->id);
+        $checkSubCategories = DB::table('categories')->where('parent_id', $checkCurrent->id)->get();
+        //del main
+        DB::table('categories')->where('id', $id)->delete();
+        if($checkSubCategories->count() > 0){
+            foreach($checkSubCategories as $checkSubCategory){
+                checkProductIsEXist($checkSubCategory->id);
+                //del sub cateogry
+                DB::table('categories')->where('id', $checkSubCategory->id)->delete();
+                $checkSubCategories2 = DB::table('categories')->where('parent_id', $checkSubCategory->id)->get();
+                if($checkSubCategories2->count() > 0){
+                    foreach($checkSubCategories2 as $checkSubCategories22){
+                        //del sub cateogry2
+                        DB::table('categories')->where('id', $checkSubCategories22->id)->delete();
+                        checkProductIsEXist($checkSubCategories22->id);
+                    }
+                }
+            }
+        }
+        
+        return back()->with('success', 'category Deleted...');
+      
+        
+    }
+
 }

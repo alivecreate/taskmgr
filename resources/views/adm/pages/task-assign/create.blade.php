@@ -1,12 +1,11 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
 @endsection
 
 @section('custom-js')
-
 
 <script>
 $('.kacheri_parent_id').on('change', function() {
@@ -71,6 +70,15 @@ $('.kacheri_parent_id').on('change', function() {
 $(".task-assign").addClass( "menu-is-opening menu-open");
 $(".task-assign a").addClass( "active-menu");
 
+$(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+    })
 
 </script>
 @endsection
@@ -82,12 +90,12 @@ $(".task-assign a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>ADD Task: કામગીરી / ટાસ્ક </h1>
+            <h1>ADD: કામગીરી પત્રક / ટાસ્કને એડ કરો </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{url('admin')}}">Home</a></li>
-              <li class="breadcrumb-item active">Task</li>
+              <li class="breadcrumb-item active">કામગીરી પત્રક</li>
             </ol>
           </div>
         </div>
@@ -111,9 +119,9 @@ $(".task-assign a").addClass( "active-menu");
                         @csrf
                     <div class="form-group row">
                     
-                        <div class="col-sm-4">
+                        <div class="col-sm-7">
                             <label for="text">ટાસ્ક</label>
-                            <select name="task_id" class="form-control task_id">
+                            <select name="task_id" class="form-control task_id" required>
                               <option value="">ટાસ્ક સિલેક્ટ કરો</option>
                                 @foreach($tasks as $task)
                                     <option value="{{$task->id}}">{{$task->id}}). {{$task->name}} ({{$task->client->name}})</option> 
@@ -126,11 +134,6 @@ $(".task-assign a").addClass( "active-menu");
                         <input type="hidden" name="admin_id" value="{{session('LoggedUser')->id}}">
                         <input type="hidden" name="status_id" value="1">
 
-                        <div class="col-sm-3">
-                          <label for="text">નોંધ નં</label>
-                          <input type="text" class="form-control" name="note_no"
-                            placeholder="નોંધ નં" value="{{old('note_no')}}">
-                        </div>
 
                         <div class="col-sm-3">
                           <label for="text">આજની તારીખ</label>
@@ -142,21 +145,39 @@ $(".task-assign a").addClass( "active-menu");
 
                           <div class="form-group row">
                             
-                              <div class="col-sm-6">
+                              <!-- <div class="col-sm-6">
                                 <label for="text">કામગીરી વ્યક્તિ</label>
-                                <select name="employee_id" class="form-control employee_id">
+                                <select name="employee_id" class="form-control employee_id" required>
                                   <option value="">કચેરી સિલેક્ટ કરો</option>
                                     @foreach($employees as $employee)
                                         <option value="{{$employee->id}}">{{$employee->name}}</option>
                                     @endforeach
                                 </select>
-                                <span class="text-danger">@error('date') {{$message}} @enderror</span>
-                              </div>
-                              
-                              <div class="col-sm-6">
+                                <span class="text-danger">@error('employee_id') {{$message}} @enderror</span>
+                              </div> -->
+
+
+
+                    <div class="col-sm-12">
+                      <div class="select2-purple">
+                                <label for="text">કામગીરી વ્યક્તિ</label>
+                        <select name="employee_id[]" class="select2" multiple="multiple" 
+                        data-placeholder="કામગીરી વ્યક્તિ સિલેક્ટ કરો" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                        
+                        <option value="">કામગીરી વ્યક્તિ સિલેક્ટ કરો</option>
+                          @foreach($employees as $employee)
+                              <option value="{{$employee->id}}">{{$employee->name}}</option>
+                          @endforeach
+
+                        </select>
+                      </div>
+                      </div>
+                  
+
+                              <div class="col-sm-12">
                                 <label for="type">પ્રકાર</label>
                                   <input type="text" class="form-control" name="type" 
-                                    placeholder="પ્રકાર" value="{{old('type')}}">
+                                    placeholder="પ્રકાર" value="{{old('type')}}" required>
                                 <span class="text-danger">@error('type') {{$message}} @enderror</span>
                               </div>
                             
@@ -166,7 +187,7 @@ $(".task-assign a").addClass( "active-menu");
                             <div class="col-sm-6">
                               <label for="description">વિગત</label>
                                 <input type="text" class="form-control" name="description" 
-                                  placeholder="વિગત" value="{{old('description')}}">
+                                  placeholder="વિગત" value="{{old('description')}}" required>
                               <span class="text-danger">@error('description') {{$message}} @enderror</span>
                           </div>
 
@@ -174,14 +195,14 @@ $(".task-assign a").addClass( "active-menu");
                         <div class="col-sm-3">
                           <label for="date_inward">ઇન્વર્ડ તારીખ</label>
                             <input type="date" class="form-control" name="date_inward" 
-                              placeholder="તારીખ" value="{{old('date_inward')}}">
+                              placeholder="તારીખ" value="{{old('date_inward')}}" required>
                           <span class="text-danger">@error('date_inward') {{$message}} @enderror</span>
                         </div>
                       
                         <div class="col-sm-3">
                           <label for="date_check">તપાસ તારીખ</label>
                             <input type="date" class="form-control" name="date_check" 
-                              placeholder="તારીખ" value="{{old('date_check')}}">
+                              placeholder="તારીખ" value="{{old('date_check')}}" required>
                           <span class="text-danger">@error('date_check') {{$message}} @enderror</span>
                         </div>
                     </div>
@@ -217,7 +238,7 @@ $(".task-assign a").addClass( "active-menu");
 
 
                   <div class="card-footer container">
-                    <button type="submit" class="btn btn-info float-right"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્ક સેવ કરો</button>
+                    <button type="submit" class="btn btn-info float-right"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્કને એડ કરો</button>
                   </div>
                   </form>
                   </div>

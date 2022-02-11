@@ -1,7 +1,19 @@
 .table-border-none tr td{
     border:none;
 }
+/* Calender */
 
+.fc-time {
+    color: #ffffff;
+    background: #0000007a;
+    padding: 0px 4px;
+    border-radius: 3px;
+}
+span.fc-title {
+    color: white;
+}
+
+/* End Calender */
 .table-border-none tr td:hover, .table-border-none tr:hover{
 color: #212529;
 background-color: transparent !important;
@@ -15,6 +27,31 @@ background-color: transparent !important;
     width: 70px;
     height: 70px;
 }
+th, td {
+    font-size: 19px;
+}
+.nav-sidebar .nav-link {
+    min-height: 53px;
+}
+.mention-wrapper {
+	position: absolute;
+	background: white;
+	border: 1px solid silver;
+}
+
+.sidebar a.nav-link {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    line-height: unset;
+}
+.nav-sidebar .nav-link>.right, .nav-sidebar .nav-link>p>.right {
+    position: absolute;
+    right: 1rem;
+    line-height: unset;
+    top: auto;
+}
+
 aside.main-sidebar {
     background: #2183D8;
 }
@@ -103,4 +140,8 @@ li ul.nav > .nav-item > .nav.nav-treeview a {
     background: #ffca7b !important;
     border-left: 3px solid;
     padding: 5px;
+}
+.chat-box{
+    max-height: 420px;
+    overflow: auto;
 }

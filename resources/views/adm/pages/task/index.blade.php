@@ -1,11 +1,28 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','List:- Task')
 
 @section('toast')
   @include('adm.widget.toast')
 @endsection
 
 @section('custom-js')
+
+<script src="{{url('adm')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{url('adm')}}/plugins/jszip/jszip.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
 $( document ).ready(function() {
   $(".del-modal").click(function(){
@@ -22,6 +39,25 @@ $(".task").addClass( "menu-is-opening menu-open");
 $(".task a").addClass( "active-menu");
 
 </script>
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": true,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+  
+</script>
 @endsection
 
 
@@ -32,12 +68,12 @@ $(".task a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>task List: કર્મચારી</h1>
+            <h1>List: ટાસ્ક / કામગીરીનું લિસ્ટ</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{url('admin')}}">Home</a></li>
-              <li class="breadcrumb-item active">task</li>
+              <li class="breadcrumb-item active">ટાસ્ક - કામગીરીનું લિસ્ટ</li>
             </ol>
           </div>
         </div>
@@ -53,7 +89,7 @@ $(".task a").addClass( "active-menu");
             <div class="card">
               
               <div class="card-body table-responsive p-0">
-                <table class="table table-hover bg-nowrap" p-1>
+                <table id="example1" class="table table-hover" p-1>
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -61,7 +97,7 @@ $(".task a").addClass( "active-menu");
                       <th>અરજદારનું નામ</th>
                       <th>અરજદારનું ફોટો</th>
                       <th>કચેરીનું નામ</th>
-                      <th>Action</th>
+                      <th width="100">Action</th>
                     </tr>
                   </thead>
                   <tbody>

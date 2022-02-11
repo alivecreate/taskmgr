@@ -19,7 +19,7 @@ class EmployeeController extends Controller
      */
     
     public function __construct(){
-        $this->employees = Admin::orderBy('id', 'DESC')->whereNotIn('id',[1])->get();
+        $this->employees = Admin::orderBy('id', 'DESC')->get();
     }
     
 
@@ -66,7 +66,7 @@ class EmployeeController extends Controller
         $employee->email  = $request->email;
         $employee->password = Hash::make($request->password);
         $employee->address  = $request->address ;
-        $employee->education  = $request->education;
+        $employee->code  = $request->code;
         $employee->post  = $request->post;
         $save = $employee->save();
 
@@ -135,7 +135,7 @@ class EmployeeController extends Controller
         $employee->phone  = $request->phone ;
         $employee->password  = $password;
         $employee->address  = $request->address ;
-        $employee->education  = $request->education;
+        $employee->code  = $request->code;
         $employee->post  = $request->post;
         $save = $employee->save();
 

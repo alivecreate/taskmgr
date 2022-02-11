@@ -9,13 +9,13 @@
 
 
 <script>
+
 $('.kacheri_parent_id').on('change', function() {
         var parent = $(this).find(':selected').val();
     // alert(parent);
 
         $.get( `{{url('api')}}/get/getPetaKacheri/`+parent, { kacheri_parent_id: parent })
         .done(function( data ) {
-          // alert(JSON.stringify(data));
 
         if(JSON.stringify(data.length) == 0){
             $('.petaKacheri_parent_id').html('<option>પેટાકચેરી સિલેક્ટ કરો</option>');
@@ -80,7 +80,7 @@ $(".task a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>ADD Task: કામગીરી / ટાસ્ક </h1>
+            <h1>ADD: ટાસ્ક / કામગીરીને એડ કરો </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -108,7 +108,7 @@ $(".task a").addClass( "active-menu");
                     <div class="col-sm-4">
                       <label for="name"><span class="text-danger">*</span> ટાસ્કનું નામ</label>
                       <input type="text" class="form-control" name="name" 
-                         placeholder="ટાસ્કનું નામ" value="{{old('name')}}">
+                         placeholder="ટાસ્કનું નામ" value="{{old('name')}}" required>
                          
                     <span class="text-danger">@error('name') {{$message}} @enderror</span>
                     </div>
@@ -116,7 +116,7 @@ $(".task a").addClass( "active-menu");
                     <div class="col-sm-4">
                       <label for="client_id">અરજદારનું નામ</label>
 
-                      <select name="client_id" id="" class="form-control">
+                      <select name="client_id" id="" class="form-control" required>
                           <option value="">અરજદારનું નામ સિલેક્ટ કરો</option>
                         @foreach($clients as $client)
                             <option value="{{$client->id}}"
@@ -167,7 +167,7 @@ $(".task a").addClass( "active-menu");
 
                   </div>
                     <div class="card-footer container">
-                       <button type="submit" class="btn btn-info float-right"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્ક સેવ કરો</button>
+                       <button type="submit" class="btn btn-info float-right"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્કને એડ કરો</button>
                     </div>
                     
               </form>

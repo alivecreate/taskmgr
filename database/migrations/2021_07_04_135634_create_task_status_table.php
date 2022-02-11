@@ -22,7 +22,6 @@ class CreateTaskStatusTable extends Migration
             $table->unsignedBigInteger('status_id')->nullable();
             $table->foreign('status_id')->references('id')->on('status');
             
-            $table->unsignedBigInteger('task_assign_id')->nullable();
 
             $table->unsignedBigInteger('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients');
@@ -33,6 +32,7 @@ class CreateTaskStatusTable extends Migration
             $table->softDeletes();
             $table->timestamps();
 
+            $table->unsignedBigInteger('task_assign_id')->nullable();
             $table->foreign('task_assign_id')->references('id')->on('task_assign')->onDelete('cascade');
         });
     }

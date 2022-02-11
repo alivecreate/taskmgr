@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
@@ -41,7 +41,7 @@ $(".employee a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>ADD User: કર્મચારી  </h1>
+            <h1>ADD: કર્મચારીને એડ કરો</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -107,10 +107,10 @@ $(".employee a").addClass( "active-menu");
                     </div>
                     
                     <div class="col-sm-6">
-                      <label for="education">અભ્યાસ</label>
-                        <input type="text" class="form-control" name="education" 
-                          placeholder="અભ્યાસ" value="{{old('education')}}">
-                      <span class="text-danger">@error('education') {{$message}} @enderror</span>
+                      <label for="code">કર્મચારી કોડ</label>
+                        <input type="text" class="form-control" name="code" 
+                          placeholder="કર્મચારી કોડ" value="{{old('code')}}">
+                      <span class="text-danger">@error('code') {{$message}} @enderror</span>
                     </div>
                   </div>
 
@@ -132,7 +132,7 @@ $(".employee a").addClass( "active-menu");
                   </div>
 
                   <div class="card-footer">
-                  <button type="submit" class="btn btn-info">કર્મચારી સેવ કરો</button>
+                  <button type="submit" class="btn btn-info">કર્મચારીને એડ કરો</button>
                 </div>
                   </div>
 

@@ -1,3 +1,34 @@
+<?php
+
+        // if(session()->has('LoggedUser')){
+        //     session()->pull('LoggedUser');
+        //     dd('ses available');
+        // }else{
+        //     dd('not available');
+
+        // }
+
+        if(session('LoggedUser')){
+           $userId = session('LoggedUser')->id;
+        }
+        else{
+          dd(session('LoggedUser'));
+        }
+        // if($userId == 1){
+        //     $commentUrl = route('task-assign.show',$notification->task_assign_id);
+        //     $commentUrl = route('task-assign.show',$notification->task_assign_id);
+        // }else{
+        //   $commentUrl = route('task-assign.show',$notification->task_assign_id);
+
+        // } 
+
+
+        // dd(getTaskCommentsById($userId));
+
+        // dd(getTaskComments());
+        // dd(getTaskCommentsById($userId));
+    ?>
+
 
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
 
@@ -11,13 +42,7 @@
 
       <li class="nav-item d-none d-sm-inline-block">
 
-        <a href="index3.html" class="nav-link">Home</a>
-
-      </li>
-
-      <li class="nav-item d-none d-sm-inline-block">
-
-        <a href="#" class="nav-link">Contact</a>
+        <a href="{{url('admin')}}" class="nav-link">Home</a>
 
       </li>
 
@@ -27,112 +52,52 @@
 
     <ul class="navbar-nav ml-auto">
 
-      <li class="nav-item">
-
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-
-          <i class="fas fa-search"></i>
-
-        </a>
-
-        <div class="navbar-search-block">
-
-          <form class="form-inline">
-
-            <div class="input-group input-group-sm">
-
-              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-
-              <div class="input-group-append">
-
-                <button class="btn btn-navbar" type="submit">
-
-                  <i class="fas fa-search"></i>
-
-                </button>
-
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-
-                  <i class="fas fa-times"></i>
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </form>
-
-        </div>
-
-      </li>
-
-
-
-        
-
-          
-
       <li class="nav-item dropdown">
 
         <a class="nav-link" data-toggle="dropdown" href="#">
 
           <i class="far fa-comments"></i>
 
-          <span class="badge badge-danger navbar-badge">{{getTaskComments()->count()}}</span>
+          @if(getTaskCommentsById($userId)->count() > 0)
+            <span class="badge badge-danger navbar-badge">{{getTaskCommentsById($userId)->count()}}</span>
+          @endif
 
         </a>
 
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        @if($userId == 1)
+        @if(getTaskCommentsById($userId)->count() > 0)
+          @foreach(getTaskCommentsById($userId) as $taskComment)
 
-
-
-        @if(getTaskComments()->count() > 0)
-
-          @foreach(getTaskComments() as $taskComment)
-
-            <a href="{{route('task-assign.show',$taskComment->task_assign_id)}}" class="dropdown-item">
+            <a href="{{route('task-assign.show',$taskComment->task_assign_id)}}?employee={{$taskComment->admin_id}}" class="dropdown-item">
 
               <div class="media">
-            dd($taskComment);
-          @if($taskComment->admin_image)
 
-            <img src="{{url('web')}}/media/sm/{{$taskComment->admin_image}}" 
+              @if($taskComment->admin_image)
+                <img src="{{url('web')}}/media/sm/{{$taskComment->admin_image}}" 
+                class="mr-3 img-circle object-fit" width="40" height="40">
+              @else
+                <img class="mr-3 img-circle object-fit" width="40" height="40" src="{{url('adm')}}/img/no-user.jpeg">
 
-            class="mr-3 img-circle object-fit" width="40" height="40" alt="Admin Image">
-
-          @else
-
-            <img class="mr-3 img-circle object-fit" width="40" height="40" src="{{url('adm')}}/img/no-user.jpeg">
-
-          @endif
-
-
-
+              @endif
                 <div class="media-body">
-
                   <h3 class="dropdown-item-title">
 
                     @if($taskComment->comment_type == 'status')
-
                       <strong>Status:- </strong>
-
-                        
-
                       <span class="{{getStatusBadgeColor(getTaskStatus($taskComment->comment)->name)}}">{{getTaskStatus($taskComment->comment)->name}}</span>
-
-                    @else
-
-                      <strong>{{$taskComment->comment}}</strong>
-
-                    @endif
-
                     
-
+                    @elseif($taskComment->comment_type == 'file_upload')
+                      <strong><i class="fa fa-file" aria-hidden="true"></i> File Upload:- </strong> <br>
+                      @if($taskComment->comment)<p>&nbsp;&nbsp;{{$taskComment->comment}}</p>@endif
+                    
+                    @else
+                      <p class="text-strong">{{$taskComment->comment}}</p>
+                    @endif
+                    
                     <span class="float-right text-sm text-danger">
 
                       <i class="fas fa-star {{getStatusTextColor($taskComment->status_name)}}"></i></span>
-
                   </h3>
 
                   <p class="text-sm">{{$taskComment->task_assign_description}}</p>
@@ -146,16 +111,58 @@
             </a>
 
           @endforeach
-
         @endif
 
+        @else
+ @if(getTaskCommentsById($userId)->count() > 0)
+          @foreach(getTaskCommentsById($userId) as $taskComment)
 
+            <a href="{{url('admin')}}/task-assign-show/{{$taskComment->task_assign_id}}" class="dropdown-item">
+              <div class="media">
 
-          <div class="dropdown-divider"></div>
+              @if($taskComment->admin_image)
+                <img src="{{url('web')}}/media/sm/{{$taskComment->admin_image}}" 
+                class="mr-3 img-circle object-fit" width="40" height="40">
+              @else
+                <img class="mr-3 img-circle object-fit" width="40" height="40" src="{{url('adm')}}/img/no-user.jpeg">
 
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+              @endif
+                <div class="media-body">
+                  <h3 class="dropdown-item-title">
 
-        </div>
+                    @if($taskComment->comment_type == 'status')
+                      <strong>Status:- </strong>
+                      <span class="{{getStatusBadgeColor(getTaskStatus($taskComment->comment)->name)}}">{{getTaskStatus($taskComment->comment)->name}}</span>
+                    
+                    @elseif($taskComment->comment_type == 'file_upload')
+                      <strong><i class="fa fa-file" aria-hidden="true"></i> File Upload:- </strong> <br>
+                      @if($taskComment->comment)<p>&nbsp;&nbsp;{{$taskComment->comment}}</p>@endif
+                    
+                    @else
+                      <h5><p>{{$taskComment->comment}}</p></h5>
+                    @endif
+                    
+                    <span class="float-right text-sm text-danger">
+
+                      <i class="fas fa-star {{getStatusTextColor($taskComment->status_name)}}"></i></span>
+                  </h3>
+
+                  <h6><p>{{$taskComment->task_assign_description}}</p></h6>
+
+                  <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{dateToDayCalculate($taskComment->comment_created_at)}}</p>
+
+                </div>
+
+              </div>
+
+            </a>
+
+          @endforeach
+        @endif
+
+        
+        @endif
+
 
       </li>
 
@@ -169,69 +176,79 @@
 
           <i class="far fa-bell"></i>
 
-          <span class="badge badge-danger navbar-badge">{{getTaskAssign()->count()}}</span>
-
+          @if(getNotifications($userId)->count() > 0)
+            <span class="badge badge-danger navbar-badge">{{getNotifications($userId)->count()}}</span>
+          @endif
         </a>
 
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 
 
-
-        @if(getTaskAssign()->count() > 0)
-
-          @foreach(getTaskAssign() as $taskAssign)
-
-            <a href="{{route('task-assign.show',$taskAssign->task_assign_id)}}" class="dropdown-item">
-
-            
-
-            
-
+        @if($userId == 1)
+        @if(getNotifications($userId)->count() > 0)
+          @foreach(getNotifications($userId) as $notification)
+            <a href="{{route('task-assign.show',$notification->task_assign_id)}}" class="dropdown-item">
               <div class="media">
-
-              @if($taskAssign->client_image)
-
-                <img src="{{url('web')}}/media/sm/{{$taskAssign->client_image}}" 
-
+              @if(isset($notification->client_image))
+                <img src="{{url('web')}}/media/sm/{{$notification->client_image}}" 
                 class="mr-3 img-circle object-fit" width="40" height="40" alt="Client Image">
-
               @else
-
                 <img class="mr-3 img-circle object-fit" width="40" height="40" src="{{url('adm')}}/img/no-user.jpeg">
 
               @endif
 
 
-
-                
-
                 <div class="media-body">
-
-                  <h3 class="dropdown-item-title">
-
-                    {{$taskAssign->task_description}}
-
+                  <h3 class="dropdown-item-title text-danger">
+                    {{$notification->comment}}
                   </h3>
+                  <p class="text-sm">{{$notification->task_assign_description}}</p>
+                  <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{dateToDayCalculate($notification->task_created_at)}}
 
-                  <p class="text-sm">{{$taskAssign->task_name}}</p>
-
-                  <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{dateToDayCalculate($taskAssign->task_created_at)}}
-
-
-
-                  <span class="right badge badge-light float-right">{{$taskAssign->client_name}}</span>
-
+                  <span class="right badge badge-light float-right">{{$notification->client_name}}</span>
                   <span class="right badge badge-dark float-right">New Task</span>
-
                   </p>
-
                 </div>
-
+                <hr>
               </div>
-
             </a>
 
           @endforeach
+        @endif
+
+        @else
+
+        @if(getNotifications($userId)->count() > 0)
+          @foreach(getNotifications($userId) as $notification)
+            <a href="{{url('admin')}}/task-assign-show/{{$notification->task_assign_id}}" class="dropdown-item">
+              <div class="media">
+              @if(isset($notification->client_image))
+                <img src="{{url('web')}}/media/sm/{{$notification->client_image}}" 
+                class="mr-3 img-circle object-fit" width="40" height="40" alt="Client Image">
+              @else
+                <img class="mr-3 img-circle object-fit" width="40" height="40" src="{{url('adm')}}/img/no-user.jpeg">
+
+              @endif
+
+
+                <div class="media-body">
+                  <h3 class="dropdown-item-title text-danger">
+                    {{$notification->comment}}
+                  </h3>
+                  <p class="text-sm">{{$notification->task_assign_description}}</p>
+                  <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{dateToDayCalculate($notification->task_created_at)}}
+
+                  <span class="right badge badge-light float-right">{{$notification->client_name}}</span>
+                  <span class="right badge badge-dark float-right">New Task</span>
+                  </p>
+                </div>
+                <hr>
+              </div>
+            </a>
+
+          @endforeach
+        @endif
+
 
         @endif
 
@@ -239,89 +256,19 @@
 
           <div class="dropdown-divider"></div>
 
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+          <a href="{{route('task-assign.index')}}" class="dropdown-item dropdown-footer">See All Messages</a>
 
         </div>
 
       </li>
 
       
-
-      <li class="nav-item dropdown">
-
-        <a class="nav-link" data-toggle="dropdown" href="#">
-
-          <i class="far fa-bell"></i>
-
-          <span class="badge badge-warning navbar-badge">15</span>
-
-        </a>
-
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-
-          <div class="dropdown-divider"></div>
-
-          <a href="#" class="dropdown-item">
-
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-
-            <span class="float-right text-muted text-sm">3 mins</span>
-
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a href="#" class="dropdown-item">
-
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-
-            <span class="float-right text-muted text-sm">12 hours</span>
-
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a href="#" class="dropdown-item">
-
-            <i class="fas fa-file mr-2"></i> 3 new reports
-
-            <span class="float-right text-muted text-sm">2 days</span>
-
-          </a>
-
-          <div class="dropdown-divider"></div>
-
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-
-        </div>
-
-      </li>
-
       <li class="nav-item">
-
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-
           <i class="fas fa-expand-arrows-alt"></i>
-
         </a>
-
-      </li>
-
-      <li class="nav-item">
-
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-
-          <i class="fas fa-th-large"></i>
-
-        </a>
-
       </li>
 
     </ul>
 
   </nav>
-
-  <!-- /.navbar -->
-

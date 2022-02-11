@@ -18,6 +18,12 @@ class Category extends Model
         return $data;
     }
 
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id', 'id');
+    }
+
+    
     public function subCategories2($id){
         $data = DB::table('categories')
         ->where('parent_id',$id)

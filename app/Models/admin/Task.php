@@ -4,13 +4,11 @@ namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use DB;
 
 class Task extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     function client(){
         return $this->belongsTo(Client::class);
@@ -118,22 +116,21 @@ class Task extends Model
     function getParent($id){
         
         $kacheri = Category::find($id);
-        if($kacheri->parent_id == 0){
-            // dd(['kacheri'=>$kacheri, 'petaKacheri' => null, 'department' => null]);
-            
-            return (['kacheri'=>$kacheri, 'petaKacheri' => null, 'department' => null]);
-        }
-        else{
-            $petaKacheri = Category::find($kacheri->parent_id);
-            if($petaKacheri->parent_id == 0){
-                
-            // dd(['kacheri'=>$petaKacheri, 'petaKacheri' => $kacheri, 'department' => null]);
-                return (['kacheri'=>$petaKacheri, 'petaKacheri' => $kacheri, 'department' => null]);
-            }else{
-                $department = Category::find($petaKacheri->parent_id);
-               
-                return(['kacheri'=>$department, 'petaKacheri' => $petaKacheri, 'department' => $kacheri]);
 
+        if(isset($kacheri)){
+            if($kacheri->parent_id == 0){
+                return (['kacheri'=>$kacheri, 'petaKacheri' => null, 'department' => null]);
+            }
+            else{
+                $petaKacheri = Category::find($kacheri->parent_id);
+                
+                if(isset($petaKacheri))
+                    if($petaKacheri->parent_id == 0){
+                        return (['kacheri'=>$petaKacheri, 'petaKacheri' => $kacheri, 'department' => null]);
+                    }else{
+                        $department = Category::find($petaKacheri->parent_id);
+                        return(['kacheri'=>$department, 'petaKacheri' => $petaKacheri, 'department' => $kacheri]);
+                }
             }
         }
     }

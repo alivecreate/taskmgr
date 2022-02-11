@@ -1,0 +1,58 @@
+.treeview-colorful a {
+  font-size: 20px;
+  font-weight: bold;
+  background: white;
+  padding: 8px 8px;
+  border: 1px solid;
+}
+.tree-btn-edit, .tree-btn-edit{
+  font-size: 16px;
+  border: none !important;
+  background: none !important;
+  padding: 0px;
+}
+.treeview-colorful ul:nth-child(2){
+
+  padding-left: 128px;
+}
+
+ .treeview-colorful ul li ul, .treeview-colorful ul .level2ul:first-child
+.treeview-colorful ul:first-child, .treeview-colorful ul, .treeview-colorful ul li ul, .treeview-colorful ul .level2 {
+    max-width: 100%;
+    margin: 0 auto;
+    list-style-type: none;
+    counter-reset: steps;
+    margin: 0;
+    font-family: sans-serif;
+  }
+  .treeview-colorful ul li, .treeview-colorful ul li ul li, .treeview-colorful ul .level2 ul li {
+    padding: 0 0 20px 50px;
+    position: relative;
+    margin: 0;
+  }
+  .treeview-colorful ul li:after, .treeview-colorful ul .level2 ul li:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    counter-increment: steps;
+    border: 2px solid #000;
+    border-radius: 50%;
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    text-align: center;
+    line-height: 24px;
+    background: #fff;
+  }
+  .treeview-colorful ul li:before,  .treeview-colorful ul li ul li:before {
+    position: absolute;
+    left: 43px;
+    top: 0;
+    content: "";
+    height: 100%;
+    width: 0;
+    border-left: 2px dashed #dc3545;
+  }
+  .treeview-colorful ul li:last-of-type:before,   .treeview-colorful ul li ul li:last-of-type:before {
+    border: none;
+  }

@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 @section('content')
 
 @section('custom-js')
@@ -10,6 +10,7 @@ $(".dashboard a").addClass( "active-menu");
 
 </script>
 @endsection
+
 
 <div class="content-wrapper">
     <div class="content-header">
@@ -33,13 +34,13 @@ $(".dashboard a").addClass( "active-menu");
         <div class="row">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+              <span class="info-box-icon bg-info elevation-1">
+                  <small><i class="fa fa-question" aria-hidden="true"></i></small></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">CPU Traffic</span>
+                <span class="info-box-text">Pending Task</span>
                 <span class="info-box-number">
-                  10
-                  <small>%</small>
+                  {{$pendingTaskCount}}
                 </span>
               </div>
             </div>
@@ -47,64 +48,63 @@ $(".dashboard a").addClass( "active-menu");
 
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+              <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-tasks" aria-hidden="true"></i></span>
 
-              <div class="info-box-content">
-                <span class="info-box-text">Likes</span>
-                <span class="info-box-number">41,410</span>
-              </div>
+              <a href="{{route('admin.report.status-wise')}}?status=1&type=status-wise">
+                <div class="info-box-content">
+                    <span class="info-box-text">11 Processing Task</span>
+                    <span class="info-box-number">
+                      {{$processingTaskCount}}
+                    </span>
+                </div>
+              </a>
             </div>
           </div>
 
           <div class="clearfix hidden-md-up"></div>
-
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+              <span class="info-box-icon bg-success elevation-1"><i class="fa fa-check-circle" aria-hidden="true"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Sales</span>
-                <span class="info-box-number">760</span>
+                <a href="{{route('admin.report.status-wise')}}?status=2&type=status-wise">
+                  <span class="info-box-text">Completed Task</span>
+                  <span class="info-box-number">
+                    {{$completedTaskCount}}
+                  </span>
+                </a>
               </div>
             </div>
           </div>
 
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+              <span class="info-box-icon bg-danger elevation-1"><i class="fa fa-times"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">New Members</span>
-                <span class="info-box-number">2,000</span>
+                <span class="info-box-text">Canceled Task</span>
+                <span class="info-box-number">
+                  {{$canceledTaskCount}}
+                </span>
               </div>
             </div>
           </div>
         </div>
         
-        @include('adm.widget.monthly-recap')
         
         <div class="row">
-          <div class="col-md-8">
-
-            
+          <div class="col-md-12">
             @include('adm.widget.latest-projects')
-            <div class="row">
-              @include('adm.widget.direct-chat')
-              @include('adm.widget.latest-members')
-            </div>
           </div>
-
+        
+        {{-- 
           <div class="col-md-4">
 
-          @include('adm.widget.color-strips-data')
+          @include('adm.widget.recent-activity')
           
-          @include('adm.widget.browser-usage')
-
-          @include('adm.widget.product-list')
-
-
-
           </div>
+
+        --}}
         </div>
       </div>
       

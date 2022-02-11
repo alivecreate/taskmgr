@@ -23,6 +23,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+
+        // dd(getNotifications(1));
+
+
+        // if(session()->has('LoggedUser')){
+        //     session()->pull('LoggedUser');
+        //     dd('ses available');
+        // }else{
+        //     dd('not available');
+
+        // }
+
+
+    // dd(session('LoggedUser')->id);
+    // die();
+        // dd(session('LoggedUser')->id);
+        // getNotifications();
     }
 }

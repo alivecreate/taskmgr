@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\api\ApiCallController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,8 @@ Route::resource('photos.comments', PhotoController::class);
 
 Route::get('get/getPetaKacheri/{id}',[CategoryController::class, 'getPetaKacheri']);
 Route::get('get/getDepartment/{id}',[CategoryController::class, 'getDepartment']);
+
+Route::get('getEmployees',[ApiCallController::class, 'getEmployees']);
 
 
 

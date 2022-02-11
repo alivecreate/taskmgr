@@ -1,7 +1,7 @@
 
             <div class="card">
-              <div class="card-header border-transparent">
-                <h3 class="card-title">Latest Orders</h3>
+              <div class="card-header border-transparent bg-dark">
+                <h3 class="card-title text-strong">પેન્ડિંગ કામકાજ</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -12,84 +12,73 @@
                   </button>
                 </div>
               </div>
-              <!-- /.card-header -->
+              
               <div class="card-body p-0">
                 <div class="table-responsive">
                   <table class="table m-0">
                     <thead>
                     <tr>
-                      <th>Order ID</th>
-                      <th>Item</th>
-                      <th>Status</th>
-                      <th>Popularity</th>
+                      <th>ID</th>
+                      <th>અરજદાર</th>
+                      <th>ફોટો</th>                      
+                      <th>ટાસ્કનું નામ</th>
+                      <th>વિગત</th>
+                      <th>કામગીરી વ્યક્તિ</th>
+                     
+                      <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
+                    
+                    @foreach($pendingTaskLists as $key => $pendingTaskList)
                     <tr>
-                      <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                      <td>Call of Duty IV</td>
-                      <td><span class="badge badge-success">Shipped</span></td>
                       <td>
-                        <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
+                          <a href="{{route('client.edit',getClient($pendingTaskList->task_id)->id)}}">
+                            @if(isset(getClient($pendingTaskList->task_id)->image))
+                              <img class="img-circle elevation-2 object-fit"  height="40" width="40"
+                                    src="{{asset('web')}}/media/icon/{{getClient($pendingTaskList->task_id)->image}}">
+                              @else
+                              <img class="img-circle elevation-2"  height="40" width="40"
+                                  src="{{asset('adm')}}/img/no-user.jpeg">
+                              @endif
+                                    <strong class="pl-1">
+                              <span class="">{{getClient($pendingTaskList->task_id)->name}}</span></span></strong>
+                            </a>
+                            
+                            </td>
+
+                      <td>{{$key}}</td>
+
+                      @if($pendingTaskList->client_image)
+                        <td><img class="img-circle elevation-2"  width="60"  height="60"
+                            src="{{asset('web')}}/media/lg/{{$pendingTaskList->client_image}}"></td>
+                            @else
+                            
+                        <td><img class="img-circle elevation-2" 
+                            src="{{asset('adm')}}/img/no-user.jpeg" width="60"></td>
+                        @endif
+
+                      <td>{{$pendingTaskList->task_name}}</td>
+                      <td>{{$pendingTaskList->task_description}}</td>
+                      <td>{{$pendingTaskList->admin_name}}</td>
+                      <td> 
+                       
+                      @if(session('LoggedUser')->id == 1)
+                        <a href="{{route('task-assign.show',$pendingTaskList->task_assign_id)}}" class="btn btn-xs btn-warning float-left mr-2"  title="Task Details"><i class="fa fa-eye"></i></a>
+                      @else
+                        <a href="{{route('admin.task.assign.show.employee',$pendingTaskList->task_assign_id)}}" class="btn btn-xs btn-warning float-left mr-2"  title="Task Details"><i class="fa fa-eye"></i></a>
+                      @endif
+
                       </td>
                     </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                      <td>Samsung Smart TV</td>
-                      <td><span class="badge badge-warning">Pending</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                      <td>iPhone 6 Plus</td>
-                      <td><span class="badge badge-danger">Delivered</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                      <td>Samsung Smart TV</td>
-                      <td><span class="badge badge-info">Processing</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                      <td>Samsung Smart TV</td>
-                      <td><span class="badge badge-warning">Pending</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                      <td>iPhone 6 Plus</td>
-                      <td><span class="badge badge-danger">Delivered</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                      <td>Call of Duty IV</td>
-                      <td><span class="badge badge-success">Shipped</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                      </td>
-                    </tr>
+                    @endforeach
+
                     </tbody>
                   </table>
                 </div>
-                <!-- /.table-responsive -->
               </div>
-              <!-- /.card-body -->
+
               <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="{{route('task-assign.index')}}" class="btn btn-sm btn-secondary float-right">View All Tasks</a>
               </div>
-              <!-- /.card-footer -->
             </div>

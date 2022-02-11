@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
@@ -165,7 +165,9 @@ $(".client a").addClass( "active-menu");
                   </div>
 
                   <div class="card-footer">
-                  <button type="submit" class="btn btn-info">અરજદાર સેવ કરો</button>
+                  <button type="submit" class="btn btn-info">
+                  <i class="fas fa-save"></i>
+                  અરજદાર સેવ કરો</button>
                 </div>
                   </div>
 

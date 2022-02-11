@@ -10,7 +10,7 @@ class TrashedController extends Controller
 {
     
     public function __construct(){
-        $this->clients = Client::onlyTrashed()->get();;
+        $this->clients = Client::get();;
     }
     
 
@@ -27,7 +27,7 @@ class TrashedController extends Controller
     {
         
         if($table == 'client'){
-            $record = Client::onlyTrashed()->find($id);
+            $record = Client::find($id);
             $delete = $record->forceDelete();
 
             if($delete){
@@ -43,7 +43,7 @@ class TrashedController extends Controller
     {
         
         if($table == 'client'){
-            $record = Client::onlyTrashed()->find($id);
+            $record = Client::find($id);
             $delete = $record->restore();
 
             if($delete){

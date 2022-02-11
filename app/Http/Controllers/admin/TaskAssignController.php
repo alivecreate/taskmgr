@@ -13,6 +13,9 @@ use App\Models\admin\Category;
 use App\Models\admin\Admin;
 use App\Models\admin\Task;
 use App\Models\admin\TaskComment;
+use App\Models\admin\Media;
+use Mail;
+use DB;
 
 
 class TaskAssignController extends Controller
@@ -30,8 +33,9 @@ class TaskAssignController extends Controller
 
         $this->tasks = Task::orderBy('id', 'DESC')->get();
 
-        $this->employees = Admin::get();
-        $this->parent_categories = category::where(['parent_id'=>0])->orderBy('id','DESC')->get();
+        $this->employees = Admin::whereNotIn('id',[1])->get();
+        $this->parent_categories = category::where(['parent_id'=>0])->whereNotIn('id', [0])->orderBy('id','DESC')->get();
+        
         $this->current_time = \Carbon\Carbon::now()->toDateTimeString();
         $this->statuses = Status::get();
 
@@ -43,7 +47,7 @@ class TaskAssignController extends Controller
         if(session('LoggedUser')->id == 1){
             $taskAssigns = $this->taskAssigns;
         }else{
-            $taskAssigns = TaskAssign::orderBy('id', 'DESC')->where('admin_id',session('LoggedUser')->id)->get();
+            $taskAssigns = TaskAssign::orderBy('id', 'DESC')->get();
         }
 
         // dd($taskAssigns);
@@ -70,29 +74,47 @@ class TaskAssignController extends Controller
             'task_id' => 'required',
             'type' => 'required',
             'description' => 'required',
-            'admin_id' => 'required',
+            'employee_id' => 'required',
             'date_inward' => 'required',
             'date_check' => 'required',
-            'file_live_status' => 'required',
-            'computer_file_status' => 'required',
-            'cupboard_file_status' => 'required',
 
         ]);
+
+
+        $employee_id = implode(",",$request->employee_id);
+        // dd($employee_id);
 
         $task = new TaskAssign;
         $task->task_id = $request->task_id;              
         $task->type = $request->type;      
         $task->description = $request->description;  
-        $task->admin_id  = $request->employee_id ; 
+        // $task->admin_id  = $employee_id ; 
+        $task->admin_group  = $employee_id ; 
+        
         $task->date_inward = $request->date_inward;      
         $task->date_check  = $request->date_check;
         $task->file_live_status  = $request->file_live_status;
         $task->computer_file_status  = $request->computer_file_status;
         $task->cupboard_file_status  = $request->cupboard_file_status;
+        
+        // dd($task);
+
         $save = $task->save();
-        // dd($task->id);
 
         if($save){
+
+            // dd($task->id);
+            foreach($request->employee_id as $employee){
+                $taskComment = new TaskComment;
+                $taskComment->type = 'new_task';
+                $taskComment->task_assign_id = $task->id;
+                $taskComment->admin_id = session('LoggedUser')->id;
+                $taskComment->admin_to = $employee;
+
+                $taskComment->comment = 'New Task Assigned...';
+                
+                $taskComment->save();
+            }
 
             $taskStatus = new TaskStatus;
             $taskStatus->status_id  = 1 ; 
@@ -121,33 +143,43 @@ class TaskAssignController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
+
+        // adm.pages.task-assign.show-employee
+        
+        // if(session('LoggedUser')->id == 1){
+        $taskAssign = TaskAssign::where('id', $id)->first();
+
+        // dd($taskAssign);
+
+        if(!isset($taskAssign)){
+            return (redirect(route('task-assign.index')));
+        }
 
         $data = [
             'clients' =>  $this->clients, 'parent_categories' => $this->parent_categories,
              'taskAssign' =>  TaskAssign::where('id', $id)->first(), 'categories' =>  $this->categories,
-             'statuses' => $this->statuses
+             'statuses' => $this->statuses,
+             'medias' => Media::where('task_assign_id', $id)->orderBy('id', 'DESC')->get()
         ];
-        $taskAssign = TaskAssign::where('id', $id)->first();
-        // dd($taskAssign);
-        $taskComments = $taskAssign->getComments($taskAssign->id);
 
-        // if(session('LoggedUser')->id == 1){
-        //     $task_comment = TaskComment::where(['task_assign_id'=>$taskAssign->id,'seen'=>0,
-        //                     ])->update(['seen' => 1, 'seen_time' => $this->current_time]);
-        //     dd($task_comment);
-        // }
-        // else{
-
-        //     $task_comment = TaskComment::where(['task_assign_id'=>$taskAssign->id,'seen'=>0,
-        //                     ])->whereNotIn('admin_id' , [session('LoggedUser')->id]
-        //                 )->update(['seen' => 1, 'seen_time' => $this->current_time]);
-        // }
 
         $task_comment = TaskComment::where(['task_assign_id'=>$taskAssign->id,'seen'=>0,
-                        ])->whereNotIn('admin_id' , [session('LoggedUser')->id]
-                    )->update(['seen' => 1, 'seen_time' => $this->current_time]);
+                        ])
+                        ->whereNotIn('admin_id' , [session('LoggedUser')->id])
+                        ->whereNotIn('type' , ['new_task'])
+                        
+                        ->update(['seen' => 1, 'seen_time' => $this->current_time]);
+                        
+
+        $task_notification = TaskComment::where(['task_assign_id'=>$taskAssign->id,'seen'=>0,
+                        ])
+                        ->where('admin_id' , [session('LoggedUser')->id])
+                        ->where('type' , ['new_task'])
+                        ->update(['seen' => 1, 'seen_time' => $this->current_time]);
+
         // dd($task_comment);
 
         // $task_comment->seen = 1;
@@ -158,7 +190,15 @@ class TaskAssignController extends Controller
 
         // dd($this->current_time);
         // if()
-        return view('adm.pages.task-assign.show', $data);
+
+        if(session('LoggedUser')->id){
+
+            return view('adm.pages.task-assign.show', $data);
+        }else{
+            
+
+            return view('adm.pages.task-assign.show-employee', $data);
+        }
     }
 
     /**
@@ -192,7 +232,40 @@ class TaskAssignController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        // dd($request->input());
+        // die();
+
+        $request->validate([
+            'type' => 'required',
+            'description' => 'required',
+            'date_inward' => 'required',
+            'date_check' => 'required',
+
+        ]);
+
+        $employee_id = implode(",",$request->employee_id);
+
+        $task = TaskAssign::find($id);
+        $task->task_id = $request->task_id;              
+        $task->type = $request->type;      
+        $task->description = $request->description;  
+        // $task->admin_id  = $employee_id ; 
+        $task->admin_group  = $employee_id ; 
+        
+        $task->date_inward = $request->date_inward;      
+        $task->date_check  = $request->date_check;
+        $task->file_live_status  = $request->file_live_status;
+        $task->computer_file_status  = $request->computer_file_status;
+        $task->cupboard_file_status  = $request->cupboard_file_status;
+        $save = $task->save();
+
+        if($save){
+
+            return back()->with('success', 'Task Updated...');
+        }else{
+            return back()->with('fail', 'Something went wrong, try again later...');
+        }
     }
 
     /**
@@ -214,6 +287,7 @@ class TaskAssignController extends Controller
     
     public function task_comment_store(Request $request){
         // dd($request->input());    
+        
         $request->validate([
             'task_assign_id' => 'required',
             'comment' => 'required', 
@@ -222,10 +296,35 @@ class TaskAssignController extends Controller
         $task = new TaskComment;
         $task->task_assign_id = $request->task_assign_id;   
         $task->comment = $request->comment;             
+        $task->type = 'comment';             
         $task->admin_id = $request->admin_id;      
+        $task->admin_to = $request->admin_to;      
         $save = $task->save();
 
+
         if($save){
+            $commentUser = DB::table('admins')->find($request->admin_to);
+
+        if(session('LoggedUser')->id == 1){
+        // dd($request->input());    
+
+            $to = 'myalivecreate@gmail.com';
+            // $to = $request->admin_email;
+            // $to = explode(',', $request->admin_email);
+            $url = url('admin').'/task-assign/'.$request->task_assign_id;
+        }else{
+            $to = 'task@mailvadodara.com';
+            $url = route('task-assign.show',$request->task_assign_id);
+        } 
+        // dd(session('LoggedUser')->name);
+
+            sendMailNotification('comment', $to, 'Comment From '.session('LoggedUser')->name,
+                 ['name'=>session('LoggedUser')->name,'client_name' => getLastComment($task->id)->client_name,
+                'msg' => $request->comment, 'client_photo' => $request->client_photo,
+                'task_name' => getLastComment($task->id)->task_name, 
+                'task_assign_description' => getLastComment($task->id)->task_assign_description,
+                'url' => $url, 
+            ]);
             return back()->with('success', 'Comment submited...');
         }else{
             return back()->with('fail', 'Something went wrong, try again later...');
@@ -248,6 +347,7 @@ class TaskAssignController extends Controller
         // dd($request->input());
 
         $taskStatus = TaskStatus::where('task_assign_id', $request->task_assign_id);
+        
         $taskStatus->update(['status_id'=>$request->status_id]);
 
         $task = new TaskComment;
@@ -255,6 +355,7 @@ class TaskAssignController extends Controller
         $task->type = 'status';             
         $task->comment = $request->status_id;             
         $task->admin_id = session('LoggedUser')->id;      
+        $task->admin_to = $request->admin_to;      
         $save = $task->save();
 
         if($taskStatus){
@@ -262,6 +363,70 @@ class TaskAssignController extends Controller
         }else{
             return back()->with('fail', 'Something went wrong, try again later...');
         }
-
     }
+
+    public function task_assign_list_employee(){
+        // dd(session('LoggedUser')->id);
+
+        // $arr = 
+        
+        $taskAssigns = TaskAssign::whereRaw('FIND_IN_SET("'.session('LoggedUser')->id.'",admin_group)')->orderBy('id', 'DESC')->get();
+        
+//         dd($taskAssigns);
+//         $search = 4;
+
+// $taskAssigns = \DB::table("task_assign")
+//     ->select("task_assign.*")
+//     ->whereRaw("find_in_set('".$search."',task_assign.admin_group)")
+//     ->get();
+
+
+    
+        // dd($data);
+
+        $data = ['clients' =>  $this->clients, 'taskAssigns' =>  $taskAssigns,
+                 'categories' =>  $this->categories];
+
+        return view('adm.pages.task-assign.task-assign-list-employee', $data);
+    }
+
+    public function show_employee($id)
+    {
+// dd($id);
+
+$taskAssign = TaskAssign::where('id', $id)->first();
+if(!isset($taskAssign)){
+    return (redirect(route('admin.task.assign.list')));
+}
+
+        $data = [
+            'clients' =>  $this->clients, 'parent_categories' => $this->parent_categories,
+            'taskAssign' =>  TaskAssign::where('id', $id)->first(), 'categories' =>  $this->categories,
+            'statuses' => $this->statuses,
+            'medias' => Media::where('task_assign_id', $id)->orderBy('id', 'DESC')->get()
+        ];
+
+        $taskAssign = TaskAssign::where(['id' => $id])->first();
+
+        $task_comment = TaskComment::where(['task_assign_id'=>$taskAssign->id,'seen'=>0,
+                        ])
+                        ->whereNotIn('admin_id' , [session('LoggedUser')->id])
+                        ->whereNotIn('type' , ['comment'])
+                        
+                        ->update(['seen' => 1, 'seen_time' => $this->current_time]);
+                        
+        // dd(session('LoggedUser')->id);
+
+        $task_notification = TaskComment::where(
+                ['task_assign_id'=>$taskAssign->id,'seen'=>0,
+                'type' => 'new_task'])
+                // ->whereRaw('admin_to', [session('LoggedUser')->id])
+                ->whereRaw('FIND_IN_SET("'.session('LoggedUser')->id.'",admin_to)')
+        
+                ->update(['seen' => 1]);
+
+
+        return view('adm.pages.task-assign.show-employee', $data);
+    }
+
 }

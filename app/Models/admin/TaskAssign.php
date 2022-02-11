@@ -14,6 +14,7 @@ class TaskAssign extends Model
     function status(){
         return $this->belongsTo(Status::class);
     }
+    
     function taskStatus($id){
         
         $taskStatus = TaskStatus::where('task_assign_id', $id)->first();
@@ -23,11 +24,12 @@ class TaskAssign extends Model
         }else{
             return Status::find(1);
         }
+
     }
 
 
     function getParent($id){
-        $task = Task::withTrashed()->find($id);
+        $task = Task::find($id);
         
         $kacheri = Category::find($task->category_id);
 
@@ -52,12 +54,12 @@ class TaskAssign extends Model
         
     }
     function task($id){
-        $task = Task::withTrashed()->find($id);
+        $task = Task::find($id);
         // return dd($task);
         return $task;
     }
     function getTask($id){
-        $task = Task::withTrashed()->find($id);
+        $task = Task::find($id);
         // return dd($task);
         return $task;
     }
@@ -76,7 +78,7 @@ class TaskAssign extends Model
 
     
     function getClient($id){
-        $task = Task::withTrashed()->find($id);
+        $task = Task::find($id);
         // dd($task);
         $client = Client::find($task->client_id);
         return $client;
@@ -99,7 +101,6 @@ class TaskAssign extends Model
         }else{            
             return $category;
         }
-
     }
 
     function getCategory3($id){
@@ -111,11 +112,43 @@ class TaskAssign extends Model
         return $category3;
     }
 
-    function getComments($id){
-        $taskComments = TaskComment::where('task_assign_id',$id)->get();
+    function getComments($id, $employeeId){
+
+        $taskComments = TaskComment::where(['task_assign_id' => $id])
+        ->orWhere(['admin_id' => $employeeId, 'admin_to' => 1])
+        ->get();
+
+        // dd($taskComments);
+        // ->where([
+        //     ['COLUMN_NAME', 'OPERATOR', 'VALUE'],
+        //     ['COLUMN_NAME', 'OPERATOR', 'VALUE']
+        // ]);
+        // ->where('admin_id = 1, '&&' ,'admin_to' , $employeeId])->get();
+        
+
+        // ->whereIn('admin_to', [1, $employeeId])->get();
         // dd($taskComments);
         return $taskComments;
     }
+    
+    function getCommentsAll($id, $employeeId){
+        $taskComments = TaskComment::where(['task_assign_id' => $id])->get();
+        // dd($taskComments);
+        return $taskComments;
+    }
+    
+    
+    function getAllComments($id){
+        $taskComments = TaskComment::where(['task_assign_id' => $id])->get();
+        return $taskComments;
+    }
+
+    function getCommentsEmployees($id, $employeeId){
+        $taskComments = TaskComment::where(['task_assign_id' => $id])
+        ->whereIn('admin_to', [1, $employeeId])->get();
+        return $taskComments;
+    }
+    
     
     function getCommentUser($id){
 

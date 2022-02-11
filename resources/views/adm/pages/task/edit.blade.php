@@ -82,7 +82,7 @@ $(".task a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Task: કામગીરી પત્રક / ટાસ્ક </h1>
+            <h1>Edit: ટાસ્ક / કામગીરીને એડિટ કરો </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -120,7 +120,7 @@ $(".task a").addClass( "active-menu");
                     <div class="col-sm-4">
                       <label for="client_id">અરજદારનું નામ</label>
 
-                      <select name="client_id" id="" class="form-control">
+                      <select name="client_id" id="" class="form-control" required>
                           <option value="">અરજદારનું નામ સિલેક્ટ કરો</option>
                         @foreach($clients as $client)
                             <option value="{{$client->id}}"
@@ -140,6 +140,7 @@ $(".task a").addClass( "active-menu");
 
                   <hr>
 
+
                   <div class="form-group row">
                     <div class="col-sm-4">
                     <label for="client_id">કચેરીનું નામ</label>
@@ -148,28 +149,28 @@ $(".task a").addClass( "active-menu");
 
                           @foreach($parent_categories as $parent_category)
                               <option value="{{$parent_category->id}}"
-                              
-                            @if($task->getParent($task->category_id)['kacheri'])
-                              @if($task->getParent($task->category_id)['kacheri'] && $parent_category->id == $task->getParent($task->category_id)['kacheri']->id)
-                                  selected
-                              @endif
-                              >{{$parent_category->name}}</option>
-                              @endif
+                            @if(isset($task->category_id))
+                              @if($task->getParent($task->category_id)['kacheri'])
+                                @if($task->getParent($task->category_id)['kacheri'] && $parent_category->id == $task->getParent($task->category_id)['kacheri']->id)
+                                    selected
+                                @endif
+                                >{{$parent_category->name}}</option>
+                                @endif
+                                @endif
 
                           @endforeach
                       </select>
                       <span class="text-danger">@error('category_id') {{$message}} @enderror</span>
                     </div>
-                    
-                    <!-- {{$task->category->parent_id}} -->
 
-                
+                    
 
                     <div class="col-sm-4">
                     <label for="client_id">પેટાકચેરીનું નામ</label>
                       <select name="petaKacheri_parent_id"  class="form-control petaKacheri_parent_id">
-                      
-                    @if($task->getParent($task->category_id)['petaKacheri'])
+
+                      @if(isset($task->category_id))
+                      @if($task->getParent($task->category_id)['petaKacheri'])
                         <option value="{{$task->getParent($task->category_id)['petaKacheri']->id}}"
                         @if($task->getParent($task->category_id)['petaKacheri'] && $parent_category->id == $task->getParent($task->category_id)['petaKacheri']->id)
                             selected
@@ -179,6 +180,7 @@ $(".task a").addClass( "active-menu");
                         @else
                         <option value="">પેટાકચેરી સિલેક્ટ કરો</option>
                       @endif
+                      @endif
                       </select>
                       <span class="text-danger">@error('petaKacheri_parent_id') {{$message}} @enderror</span>
                     </div>
@@ -187,6 +189,7 @@ $(".task a").addClass( "active-menu");
                     <label for="client_id">ડિપાર્ટમેન્ટનું નામ</label>
                       <select name="department_id"  class="form-control department_id">
 
+                      @if(isset($task->category_id))
                       @if($task->getParent($task->category_id)['department'])
                         <option value="{{$task->getParent($task->category_id)['department']->id}}"
                         @if($task->getParent($task->category_id)['department'] && $parent_category->id == $task->getParent($task->category_id)['department']->id)
@@ -196,10 +199,11 @@ $(".task a").addClass( "active-menu");
                         @else
                         <option value="">ડિપાર્ટમેન્ટ સિલેક્ટ કરો</option>
                         @endif
+                        @endif
 
                       </select>
                       <span class="text-danger">@error('department_id') {{$message}} @enderror</span>
-                      <input type="hidden" name="category_id" class="category_id">
+                      <input type="hidden" name="category_id" class="category_id" value="{{$task->category_id}}">
                       <input type="hidden" name="admin_id" value="{{session('LoggedUser')->id}}">
                     </div>
                     

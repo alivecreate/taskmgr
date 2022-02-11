@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
@@ -20,7 +20,7 @@ $(".employee a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Employee: કર્મચારી  </h1>
+            <h1>Edit: કર્મચારીને એડિટ કરો  </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -97,12 +97,12 @@ $(".employee a").addClass( "active-menu");
                     </div>
                     
                     <div class="col-sm-6">
-                      <label for="education">અભ્યાસ</label>
-                        <input type="text" class="form-control" name="education" 
-                          placeholder="અભ્યાસ" 
-                          value="@if(old('education')){{old('education')}}@else{{$employee->education}}@endif">
+                      <label for="code">કર્મચારી કોડ</label>
+                        <input type="text" class="form-control" name="code" 
+                          placeholder="કર્મચારી કોડ" disabled
+                          value="@if(old('code')){{old('code')}}@else{{$employee->code}}@endif">
 
-                      <span class="text-danger">@error('education') {{$message}} @enderror</span>
+                      <span class="text-danger">@error('code') {{$message}} @enderror</span>
                     </div>
                   </div>
 

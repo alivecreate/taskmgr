@@ -14,51 +14,51 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home.index');
+        return redirect(route('admin.index'));
     }
 
-    public function about()
-    {
-        return view('home.about');
-    }
-    public function about2()
-    {
-        return view('home.about2');
-    }
-    public function contact()
-    {
-        return view('home.contact');
-    }
+    // public function about()
+    // {
+    //     return view('home.about');
+    // }
+    // public function about2()
+    // {
+    //     return view('home.about2');
+    // }
+    // public function contact()
+    // {
+    //     return view('home.contact');
+    // }
 
-    public function manufacturing()
-    {
-        return view('home.manufacturing');
-    }
-
-
-    public function infrastructure ()
-    {
-        return view('home.infrastructure ');
-    }
+    // public function manufacturing()
+    // {
+    //     return view('home.manufacturing');
+    // }
 
 
-    public function corporate_video()
-    {
-        return view('home.corporate_video');
-    }
+    // public function infrastructure ()
+    // {
+    //     return view('home.infrastructure ');
+    // }
 
-    public function brochure()
-    {
-        return view('home.brochure');
-    }
-    public function team()
-    {
-        return view('home.team');
-    }
-    public function research_development()
-    {
-        return view('home.research_development');
-    }
+
+    // public function corporate_video()
+    // {
+    //     return view('home.corporate_video');
+    // }
+
+    // public function brochure()
+    // {
+    //     return view('home.brochure');
+    // }
+    // public function team()
+    // {
+    //     return view('home.team');
+    // }
+    // public function research_development()
+    // {
+    //     return view('home.research_development');
+    // }
 
     /**
      * Show the form for creating a new resource.

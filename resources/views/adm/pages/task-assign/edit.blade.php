@@ -1,5 +1,5 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
@@ -69,7 +69,6 @@ $('.kacheri_parent_id').on('change', function() {
 $(".task-assign").addClass( "menu-is-opening menu-open");
 $(".task-assign a").addClass( "active-menu");
 
-    
 
 
 </script>
@@ -82,12 +81,17 @@ $(".task-assign a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Task: કામગીરી પત્રક / ટાસ્ક </h1>
+            <h1>Edit: કામગીરી પત્રક / ટાસ્કને એડિટ કરો </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{url('admin')}}">Home</a></li>
-              <li class="breadcrumb-item active">Task</li>
+              <li class="breadcrumb-item active">કામગીરી પત્રક</li>
+              <li class="breadcrumb-item active">
+              <a href="{{route('task-assign.show',$taskAssign->id)}}"></a></li>
+
+              
+                        
             </ol>
           </div>
         </div>
@@ -106,12 +110,13 @@ $(".task-assign a").addClass( "active-menu");
                   <h3 class="alert-primary text-center">કામગીરી પત્રક</h3>
               
                   <form enctype="multipart/form-data" method="post" class="form-horizontal" 
-                        action="{{route('task-assign.store')}}">
-                        
+                        action="{{route('task-assign.update', $taskAssign->id)}}">
+                        <input type="hidden" name="task_id" value="{{$taskAssign->task_id}}">
                       @csrf
+                @method('PUT')
                   <div class="form-group row">    
                       
-                      <div class="col-sm-4">
+                      <div class="col-sm-7">
                           <label for="text">ટાસ્ક</label>
                           <input type="text"  class="form-control"  
                           value="{{$taskAssign->description}} ({{$taskAssign->task($taskAssign->task_id)->name}})" disabled>
@@ -120,12 +125,7 @@ $(".task-assign a").addClass( "active-menu");
                       </div>
 
                       <input type="hidden" name="admin_id" value="{{session('LoggedUser')->id}}">
-                      <div class="col-sm-3">
-                        <label for="text">નોંધ નં</label>
-                        <input type="text" class="form-control" name="note_no"
-                          value="@if(old('note_no')){{old('note_no')}}@else{{$taskAssign->note_no}}@endif">
-                         
-                      </div>
+                     
 
                       <div class="col-sm-3">
                         <label for="text">આજની તારીખ</label>
@@ -138,24 +138,38 @@ $(".task-assign a").addClass( "active-menu");
 
                         <div class="form-group row">
                           
-                            <div class="col-sm-6">
-                              <label for="text">કામગીરી વ્યક્તિ</label>
-                              <select name="employee_id" class="form-control employee_id">
-                                <option value="">કચેરી સિલેક્ટ કરો</option>
-                                  @foreach($employees as $employee)
-                                      <option value="{{$employee->id}}"
-                                      
-                                        @if($employee->id == $taskAssign->admin_id )
-                                        selected
-                                          @endif 
-                                          >
-                                      {{$employee->name}}</option>
-                                  @endforeach
+                    <div class="col-sm-12">
+                      <div class="select2-purple">
+                                <label for="text">કામગીરી વ્યક્તિ</label>
+                            <select name="employee_id[]" class="select2" multiple="multiple" 
+                              data-placeholder="Select a categories" 
+                              data-dropdown-css-class="select2-purple" style="width: 100%;">
+                              
+                              
+                                  <option value="">કામગીરી વ્યક્તિ સિલેક્ટ કરો</option>
+
+                                  @if($employees)
+                                      @foreach($employees as $employee)`
+                                          <option value="{{$employee->id}}"
+                                              
+                                            <?php
+                                              $employeeArrs = explode(',', $taskAssign->admin_group);
+                                              foreach($employeeArrs as $employeeArr){
+                                                if($employeeArr == $employee->id)
+                                                echo 'selected';
+                                              }
+                                            ?>
+                                          >{{$employee->name}}</option>
+                                      @endforeach
+                                  @endif
+
                               </select>
-                              <span class="text-danger">@error('date') {{$message}} @enderror</span>
-                            </div>
-                            
-                            <div class="col-sm-6">
+                          
+                        </div>
+                        </div>
+                        </div>
+
+                            <div class="col-sm-12">
                               <label for="type">પ્રકાર</label>
                                 <input type="text" class="form-control" name="type" 
                                   placeholder="પ્રકાર" 
@@ -164,8 +178,6 @@ $(".task-assign a").addClass( "active-menu");
                          
                               <span class="text-danger">@error('type') {{$message}} @enderror</span>
                             </div>
-                          
-                        </div>
 
                         <div class="form-group row">
                           <div class="col-sm-6">
@@ -228,8 +240,10 @@ $(".task-assign a").addClass( "active-menu");
 
 
                   <div class="card-footer container">
-                    <button type="submit" class="btn btn-info float-right"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્ક સેવ કરો</button>
-                  </div>
+                  <a href="{{route('task-assign.show',$taskAssign->id)}}" class="btn btn-warning float-right ml-2"><i class="fa fa-eye"></i>&nbsp;&nbsp;ચેટ ઓપન કરો</a>
+                  
+                    <button type="submit" class="btn btn-info float-right  ml-2"><i class="fas fa-save"></i>&nbsp;&nbsp;ટાસ્ક સેવ કરો</button>
+                    </div>
                   </form>
                   </div>
 

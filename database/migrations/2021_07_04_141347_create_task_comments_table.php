@@ -23,6 +23,8 @@ class CreateTaskCommentsTable extends Migration
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->foreign('admin_id')->references('id')->on('admins');
 
+            $table->integer('admin_to')->nullable();
+
             $table->integer('seen')->default(0);
             $table->text('seen_time')->timestamps()->nullable();
 

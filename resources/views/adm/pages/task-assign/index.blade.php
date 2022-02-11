@@ -1,11 +1,27 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
 @endsection
 
 @section('custom-js')
+<script src="{{url('adm')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{url('adm')}}/plugins/jszip/jszip.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
 $( document ).ready(function() {
   $(".del-modal").click(function(){
@@ -19,6 +35,25 @@ $( document ).ready(function() {
 $(".task-assign").addClass( "menu-is-opening menu-open");
 $(".task-assign a").addClass( "active-menu");
 
+$(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+    })
+
+</script>
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": true,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+  });
 </script>
 @endsection
 
@@ -30,7 +65,7 @@ $(".task-assign a").addClass( "active-menu");
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Task Assigned: કામગીરી વ્યક્તિ / ટાસ્ક</h1>
+            <h1>List: કામગીરી વ્યક્તિ / ટાસ્કનું લિસ્ટ</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -51,24 +86,18 @@ $(".task-assign a").addClass( "active-menu");
             <div class="card">
               
               <div class="card-body table-responsive p-0">
-                <table class="table table-hover bg-nowrap" p-1>
+                <table id="example1" class="table table-hover">
                   <thead>
                     <tr>
                       <th>ID</th>
                       <th>Status</th>
                       
-                      @if(session('LoggedUser')->id == 1)
-                        <th>ફોટો</th>
-                        <th>કામગીરી વ્યક્તિ</th>
+                        <th >કામગીરી વ્યક્તિ</th>
                         <th>વિગત</th>
-                      @else
-                        <th>અરજદારનું<br>ફોટોગ્રાફ</th>
-                        <th>વિગત</th>
-                      @endif
 
-                      <th>ટાસ્ક / અરજદારનું નામ</th>
+                      <th>અરજદારનું નામ</th>
                       <th>કચેરીનું નામ</th>
-                      <th>Action</th>
+                      <th width="120">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -76,72 +105,91 @@ $(".task-assign a").addClass( "active-menu");
                       <tr>
                         <td>{{++$i}}</td>
                         <td>
-
                         <span class="{{getStatusBadgeColor($taskAssign->taskStatus($taskAssign->id)->name)}}">
-                         <span class="text-captalize">{{$taskAssign->taskStatus($taskAssign->id)->name}}</span>
-                         </span>
                         
+                          <span class="text-captalize">{{$taskAssign->taskStatus($taskAssign->id)->name}}</span>
+                          </span>
+                          
                         </td>
                         
                       
-                      @if(session('LoggedUser')->id == 1)
-                      
-                          @if(isset($taskAssign->getEmployee($taskAssign->admin_id)->image))
-                            <td><img class="img-circle elevation-2 object-fit"  height="30" width="30"
-                                src="{{asset('web')}}/media/icon/{{$taskAssign->getEmployee($taskAssign->admin_id)->image}}"></td>
-                            @else
-                              <td><img class="img-circle elevation-2"   height="30" width="30"
-                                src="{{asset('adm')}}/img/no-user.jpeg"></td>
-                          @endif
 
-                          <td>{{$taskAssign->getEmployee($taskAssign->admin_id)->name}}</td>
+                          <td>
+                      @if(getEmployees($taskAssign->admin_group))
+                        @foreach(getEmployees($taskAssign->admin_group) as $key => $admin_group)
+                        <a href="{{route('task-assign.show',$taskAssign->id)}}?employee={{$taskAssign->getEmployee($admin_group->id)->id}}">
+                        
+                        <div class="d-flex flex-row">
+
+                                @if(isset($admin_group->image))
+                                        
+                                  <p class="pull-left mr-2 text-strong text-danger">
+                                      <img class="img-circle elevation-2 object-fit"  height="40" width="40"
+                                    src="{{asset('web')}}/media/icon/{{$taskAssign->getEmployee($admin_group->id)->image}}">
+                                    
+                                      <strong class="pl-1">({{++$key}}) 
+                                      <span class="">{{$admin_group->name}}</span></strong></p>
+                                    </a>
+
+                                  @else
+                                        <p class="pull-left mr-2 text-strong text-danger">
+                                    <img class="img-circle elevation-2"   height="40" width="40"
+                                      src="{{asset('adm')}}/img/no-user.jpeg">
+                                        <strong class="pl-1">({{++$key}})
+                                        <span>{{$admin_group->name}}</span> </strong></p>
+                                @endif
+                                
+                              </div>
+                            </a>
+                          @endforeach
+                          
+                        @endif
+
+                          </td>
                           <td>{{$taskAssign->description}}</td>
-                      @else
-                      
+
+                          <td>
+                          
+                       <a href="{{route('client.edit',$taskAssign->getClient($taskAssign->task_id)->id)}}">
                           @if(isset($taskAssign->getClient($taskAssign->task_id)->image))
-                              <td><img class="img-circle elevation-2 object-fit"  height="30" width="30"
-                                    src="{{asset('web')}}/media/icon/{{$taskAssign->getClient($taskAssign->task_id)->image}}"></td>
-                                    @else
-
-                                  <td><img class="img-circle elevation-2"  height="30" width="30"
-                                    src="{{asset('adm')}}/img/no-user.jpeg"></td>
-                          @endif
-                        
-                        <td>{{$taskAssign->description}}</td>
-                      @endif
-                      
-
-                        
-
-                        <td>{{$taskAssign->getTask($taskAssign->task_id)->name}}<br>({{$taskAssign->getClient($taskAssign->task_id)->name}})</td>
-                         
-
+                            <img class="img-circle elevation-2 object-fit"  height="40" width="40"
+                                  src="{{asset('web')}}/media/icon/{{$taskAssign->getClient($taskAssign->task_id)->image}}">
+                            @else
+                            <img class="img-circle elevation-2"  height="40" width="40"
+                                src="{{asset('adm')}}/img/no-user.jpeg">
+                            @endif
+                                  <strong class="pl-1">
+                            <span class="">{{$taskAssign->getClient($taskAssign->task_id)->name}}</span></span></strong>
+                            </a>
+                               
+                        </td>
                         <td class="">
-                        
                         @if($taskAssign->getParent($taskAssign->task_id)['kacheri'])
-                          <span class='bg-primary p-1'>{{$taskAssign->getParent($taskAssign->task_id)['kacheri']->name}}</span>
+                          <h1 class='badge badge-primary p-1'>{{$taskAssign->getParent($taskAssign->task_id)['kacheri']->name}}</h1>
                         @endif
 
                         
                         @if($taskAssign->getParent($taskAssign->task_id)['petaKacheri'])
-                          <span class='bg-danger p-1'>{{$taskAssign->getParent($taskAssign->task_id)['petaKacheri']->name}}</span>
+                          <h1 class='badge badge-danger p-1'>{{$taskAssign->getParent($taskAssign->task_id)['petaKacheri']->name}}</h1>
                         @endif
 
                         
                         @if($taskAssign->getParent($taskAssign->task_id)['department'])
-                          <span class='bg-warning p-1'>{{$taskAssign->getParent($taskAssign->task_id)['department']->name}}</span>
+                          <h1 class='badge badge-warning p-1'>{{$taskAssign->getParent($taskAssign->task_id)['department']->name}}</h1>
                         @endif
-                        
-
-
                         </td>
                         
                         <td>
                         
+                      @if(session('LoggedUser')->id == 1)
+                        <a href="{{route('task-assign.show',$taskAssign->id)}}" class="btn btn-xs btn-warning float-left mr-2"  title="Task Details"><i class="fa fa-eye"></i></a>
+                        
                         <a href="{{route('task-assign.edit',$taskAssign->id)}}" class="btn btn-xs btn-info float-left mr-2"  title="Edit task"><i class="far fa-edit"></i></a>
-                        <a href="{{route('task-assign.show',$taskAssign->id)}}" class="btn btn-xs btn-warning float-left mr-2"  title="Task Details"><i class="far fa-edit"></i></a>
-                          <button class="btn btn-xs btn-danger del-modal float-left"  title="Delete task"  data-id="{{$taskAssign->id}}" data-title="{{$taskAssign->name}}"  data-toggle="modal" data-target="#modal-default"><i class="fas fa-trash-alt"></i>
+                        <button class="btn btn-xs btn-danger del-modal float-left"  title="Delete task"  data-id="{{$taskAssign->id}}" data-title="{{$taskAssign->description}}"  data-toggle="modal" data-target="#modal-default"><i class="fas fa-trash-alt"></i>
                           </button>
+                        @else
+                        <a href="{{route('task-assign.show',$taskAssign->id)}}" class="btn btn-xs btn-warning float-left mr-2"  title="Task Details"><i class="fa fa-eye"></i></a>
+                        @endif
                       
                       </td>
                       </tr>
@@ -170,7 +218,7 @@ $(".task-assign a").addClass( "active-menu");
               </button>
             </div>
             <div class="modal-body">
-            <label>કર્મચારીનું નામ</label>
+            <label>ટાસ્કનું નામ</label>
             <h5 class="modal-title delete-title">Delete Category</h5>
             </div>
             <div class="modal-footer justify-content-between d-block ">
