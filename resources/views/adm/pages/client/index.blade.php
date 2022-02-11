@@ -1,23 +1,63 @@
 @extends('adm.layout.admin-index')
-@section('title','Dashboard - Charotar Corporation')
+@section('title','Dashboard - Task Manager')
 
 @section('toast')
   @include('adm.widget.toast')
 @endsection
 
+@section('custom-head')
+
+@endsection
+
 @section('custom-js')
+<script src="{{url('adm')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{url('adm')}}/plugins/jszip/jszip.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="{{url('adm')}}/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="{{url('adm')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
 $( document ).ready(function() {
   $(".del-modal").click(function(){
     var delete_id = $(this).attr('data-id');
     var data_title = $(this).attr('data-title');
     
-    $('.delete-form').attr('action','/admin/client/'+ delete_id);
+    $('.delete-form').attr('action', delete_id);
     $('.delete-title').html(data_title);
   });  
 });
 $(".client").addClass( "menu-is-opening menu-open");
 $(".client a").addClass( "active-menu");
+</script>
+
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": true,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+  
 </script>
 @endsection
 
@@ -35,9 +75,6 @@ $(".client a").addClass( "active-menu");
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{url('admin')}}">Home</a></li>
               <li class="breadcrumb-item active">Client</li>
-              <li class="breadcrumb-item active">
-                <a class="btn btn-sm btn-danger" href="{{route('admin.trashed','client')}}">
-                <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;Trashed</a></li>
             
             </ol>
           </div>
@@ -54,7 +91,7 @@ $(".client a").addClass( "active-menu");
             <div class="card">
               
               <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
+                <table id="example1"  class="table table-hover">
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -62,10 +99,9 @@ $(".client a").addClass( "active-menu");
                       <th>અરજદારનું નામ</th>
                       <th>રેફરેન્સનું નામ</th>
                       <th>ફોન નં 1</th>
-                      <th>ફોન નં 2</th>
                       <th>સરનામું</th>
-                      <th>નોંધ</th>
-                      <th>Action</th>
+                      <th>કચેરીનું નામ</th>
+                      <th width="100">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -84,16 +120,31 @@ $(".client a").addClass( "active-menu");
                         <td>{{$client->name}}</td>
                         <td>{{$client->ref_name}}</td>
                         <td>{{$client->phone1}}</td>
-                        <td>{{$client->phone2}}</td>
                         <td>{{$client->address}}</td>
-                        <td>{{$client->note}}</td>
                         <td>
                         
                         <a href="{{route('client.edit',$client->id)}}" class="btn btn-xs btn-info float-left mr-2"  title="Edit client"><i class="far fa-edit"></i></a>
-                          <button class="btn btn-xs btn-danger del-modal float-left"  title="Delete client"  data-id="{{ $client->id}}" data-title="{{ $client->name}}"  data-toggle="modal" data-target="#modal-default"><i class="fas fa-trash-alt"></i>
+                          <button class="btn btn-xs btn-danger del-modal float-left"  title="Delete client"  data-id="{{route('client.destroy',$client->id)}}" data-title="{{ $client->name}}"  data-toggle="modal" data-target="#modal-default"><i class="fas fa-trash-alt"></i>
                           </button>
                       
                       
+                      </td>
+                      <td>
+                        
+                      @if($taskAssign->getParent($taskAssign->task_id)['kacheri'])
+                          <h1 class='badge badge-primary p-1'>{{$taskAssign->getParent($taskAssign->task_id)['kacheri']->name}}</h1>
+                        @endif
+
+                        
+                        @if($taskAssign->getParent($taskAssign->task_id)['petaKacheri'])
+                          <h1 class='badge badge-danger p-1'>{{$taskAssign->getParent($taskAssign->task_id)['petaKacheri']->name}}</h1>
+                        @endif
+
+                        
+                        @if($taskAssign->getParent($taskAssign->task_id)['department'])
+                          <h1 class='badge badge-warning p-1'>{{$taskAssign->getParent($taskAssign->task_id)['department']->name}}</h1>
+                        @endif
+                        
                       </td>
                       </tr>
                     @endforeach
@@ -108,6 +159,8 @@ $(".client a").addClass( "active-menu");
 
 
       </div>
+
+      
     </section>
   </div>
   
